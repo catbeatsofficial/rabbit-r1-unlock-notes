@@ -1,0 +1,14 @@
+# Publication allowlist. Firmware, dumps, tools and local working files stay out.
+/*
+!/.gitignore
+!/README.md
+!/docs/
+!/scripts/
+/docs/*
+!/docs/recovery.md
+!/docs/adb.md
+!/docs/evidence.md
+!/docs/publishing.md
+/scripts/*
+!/scripts/inspect-seccfg.py
+!/scripts/test-inspector.py
