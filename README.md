@@ -8,6 +8,12 @@ The result was an **unlocked bootloader and an ADB shell running as uid 2000**.
 This is not a demonstrated Magisk installation or persistent root method.
 `adb root` stopped working USB access until reboot in our tests.
 
+## Start with your current device
+
+[Developer mode, bootloader unlock and the route toward root on recent firmware](docs/current-firmware.md)
+separates Rabbit's live account unlock procedure from the version-specific ADB
+and Magisk work. It includes a checklist for agents working with another owner.
+
 ## Read in order
 
 1. [Recovery and bootloader state](docs/recovery.md): the persistent `seccfg`

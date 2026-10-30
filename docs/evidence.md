@@ -35,6 +35,12 @@ Hashes here identify public stock inputs, not transferable device-bound repairs:
 
 A hash match is an integrity check, not a compatibility guarantee.
 
+## Other root reports
+
+A separate [first-hand report](https://bentlybro.com/posts/rooting-the-rabbit-r1-two-days-from-a-dm-verity-brick-to-magisk-on-stock-rabbitos)
+describes Magisk root on its author's R1. This repo records no Magisk result on
+our unit; the report and our verified ADB shell must not be conflated.
+
 ## Not established
 
 - Persistent Android root, a tested Magisk setup, or reliable `adb root`.

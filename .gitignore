@@ -9,6 +9,7 @@
 !/docs/adb.md
 !/docs/evidence.md
 !/docs/publishing.md
+!/docs/current-firmware.md
 /scripts/*
 !/scripts/inspect-seccfg.py
 !/scripts/test-inspector.py
