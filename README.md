@@ -14,6 +14,13 @@ This is not a demonstrated Magisk installation or persistent root method.
 separates Rabbit's live account unlock procedure from the version-specific ADB
 and Magisk work. It includes a checklist for agents working with another owner.
 
+## After it works
+
+- [Living with it](docs/after-adb.md): everyday Wi-Fi ADB, installing your own
+  launcher as Home, the camera motor, power quirks and what to avoid (2026-10-31).
+- [Toward a browser-based path](docs/browser-path.md): a plan, not yet built, for
+  doing the unlock and ADB steps from a web page.
+
 ## Read in order
 
 1. [Recovery and bootloader state](docs/recovery.md): the persistent `seccfg`
