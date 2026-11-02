@@ -8,6 +8,12 @@ The result was an **unlocked bootloader and an ADB shell running as uid 2000**.
 This is not a demonstrated Magisk installation or persistent root method.
 `adb root` stopped working USB access until reboot in our tests.
 
+## Took the latest OTA?
+
+[What happened on our unit, and the way back to v0.8.293](docs/after-the-ota.md):
+a short map of the two separate problems (a boot loop and ADB switching off) and
+which page fixes which.
+
 ## Start with your current device
 
 [Developer mode, bootloader unlock and the route toward root on recent firmware](docs/current-firmware.md)

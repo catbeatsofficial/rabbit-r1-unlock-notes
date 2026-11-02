@@ -12,6 +12,7 @@
 !/docs/current-firmware.md
 !/docs/after-adb.md
 !/docs/browser-path.md
+!/docs/after-the-ota.md
 /scripts/*
 !/scripts/inspect-seccfg.py
 !/scripts/test-inspector.py
