@@ -7,7 +7,8 @@ that the same steps are safe on yours.
 
 ## The short version
 
-1. The unit was on a recent OTA. Rabbit's own developer-mode unlock worked on it
+1. The unit took Rabbit's newest OTA, which the owner believes was **rabbitOS 3 (OS3)**;
+   the exact build number wasn't recorded. Rabbit's own developer-mode unlock worked on it
    (the owner's report; see "Not written down yet" below).
 2. Later the unit was taken back to **v0.8.293** with the official images.
 3. That is when two separate problems appeared, and they need separate fixes:
@@ -56,10 +57,13 @@ of events: unlock, OTA, flashing, then the loop.
 
 ## Not written down yet
 
-These details are known to the owner but not recorded in the notes. Fill them in
-before this page is shared:
+The early recovery work was done with another AI tool, so these were never
+recorded in this repository. They are open, not forgotten:
 
-- the exact OTA version the unit was on, and the date;
-- what exactly worked on that OTA (unlock only, or ADB too);
+- the exact OS3 build number and the date of the OTA (believed to be rabbitOS 3);
+- what exactly worked on it (unlock only, or ADB too);
 - which tool and images were used to return to v0.8.293, and how the device was
-  entered into fastboot.
+  put into fastboot.
+
+If you took the same OTA, record your own build number from Settings > Device info
+before you change anything, and say so in any report.
