@@ -1,24 +1,46 @@
-# If you took the latest OTA: what happened here, and the way back
+# If you took the latest OTA: what happened here
 
-This is the story of one R1 that took Rabbit's newest OTA, became hard to reach,
-and was brought back to a booting, unlocked device with ADB by **returning to
-rabbitOS v0.8.293**. It records what worked on that unit. It is not a promise
-that the same steps are safe on yours.
+One R1 was unlocked, took a newer Rabbit OTA overnight, and could not boot Android
+afterwards. The only public firmware, v0.8.293, was about 14 months older than what
+the unit had been running, so "going back" meant flashing that older firmware.
+It looped too. Two separate problems were hiding behind that loop, and they needed
+separate fixes. This page is the timeline from the working handoff notes. It records
+one unit. It is not a promise that the same steps are safe on yours.
 
-## The short version
+## Timeline (October 2026)
 
-1. The unit took Rabbit's newest OTA, which the owner believes was **rabbitOS 3 (OS3)**;
-   the exact build number wasn't recorded. Rabbit's own developer-mode unlock worked on it
-   (the owner's report; see "Not written down yet" below).
-2. Later the unit was taken back to **v0.8.293** with the official images.
-3. That is when two separate problems appeared, and they need separate fixes:
-   - a **boot loop** (a stuck dm-verity error flag in `seccfg`), and
-   - **ADB that kept switching itself off**.
-4. Both were fixed on v0.8.293. The device now boots, stays unlocked, and keeps ADB.
+1. **Starting point.** The unit ran rabbitOS 2.3.x (July 2026) plus a September 2026
+   OTA. Rabbit's own **OS3 developer-mode** flow plus `fastboot flashing unlock`
+   unlocked it, and it booted fine (orange state).
+2. **The OTA.** The next morning it had taken a further rabbitOS 2.x OTA overnight.
+   The working theory was that this OTA **re-locked the bootloader and wrote newer
+   low-level firmware**. That was an inference, not something we confirmed.
+3. **First failures.** One trip into fastbootd, then a reboot. A normal boot was never
+   verified after that. A patched debug boot image looped; restoring the stock one
+   still looped. The loop may have started before the patch.
+4. **Going back to v0.8.293.** A web flash died mid-upload (a WebUSB error). A command-line
+   flash of every piece reported OK and still looped. A complete official web flash
+   finished cleanly, **re-locked** the bootloader, and still looped.
+5. **Diagnosis.** Crash logs showed `lock_state=0x4` (locked), verity mode `eio` and
+   `managed=yes`. Unlocking again didn't help, and fastbootd never came up, the same
+   symptoms as [r1_escape issue 96](https://github.com/RabbitHoleEscapeR1/r1_escape/issues/96).
+6. **What was ruled out.** Bad image files (hashes matched a known-good list), a partial
+   flash, verified boot on or off, a locked bootloader, leftover newer boot pieces, and a
+   stuck boot command.
+7. **The fix.** A persistent dm-verity error in `seccfg`, which stock restores never
+   write ([recovery.md](recovery.md)). After a repair verified by full readback, Android
+   booted. ADB then needed its own fix ([adb.md](adb.md)).
 
-Nobody has shown that the OTA itself caused the loop. The notes say so
-([recovery.md](recovery.md), [evidence.md](evidence.md)). What is known is the order
-of events: unlock, OTA, flashing, then the loop.
+## What we don't know
+
+- The exact build number of either OTA. The notes record only "rabbitOS 2.x" and the
+  months. (The owner remembers it as the OS3 generation; the unlock flow is called OS3
+  developer mode.)
+- Whether the OTA re-locked the unit, or whether the official web flash did. Both
+  happened before anyone checked.
+- Whether fused anti-rollback was involved. It was the leading theory at first and was
+  never demonstrated. It also isn't ruled out for other units.
+- What first set the verity flag.
 
 ## Which problem do you have?
 
@@ -29,41 +51,16 @@ of events: unlock, OTA, flashing, then the loop.
 | Boots, but ADB disappears after boot | Rabbit's boot code turning ADB off | [adb.md](adb.md) |
 | Boots with ADB, wants a custom home screen | Disable the stock launcher and updater | [after-adb.md](after-adb.md) |
 
-## Traps we hit, in the order we hit them
+## Lessons for someone who just took the OTA
 
-- **Restoring official images does not clear the loop.** The flag lives in
-  `seccfg`, which stock restores don't write. This looked like a bad image for a
-  long time.
-- **Unlocking and disabling verification didn't clear it either.** AVB accepted
-  the state while the bootloader still ran verity in error mode.
-- **A loop does not prove anti-rollback.** It was considered and not demonstrated.
-  It also isn't ruled out for other units, so treat any downgrade as unproven.
-- **ADB gate.** Setting `ro.debuggable=1` was not enough. v0.8.293's `AdbService`
-  disabled ADB at boot unless `ro.adb.force_enable=1` ([adb.md](adb.md)).
-- **Rabbit's setup flow can bring the OTA back.** Owners report that finishing
-  setup forces the update. We disabled the updater package instead.
-- **Don't relock** while modified or verification-disabled images are installed.
+- **Don't flash the public v0.8.293 images over a newer firmware to "go back".** That is
+  what led to the loop here. We don't know that it was the cause, and a downgrade may not
+  be safe on your unit.
+- **Restoring official images does not clear a verity loop.** The flag lives in `seccfg`.
+- **A full official web flash re-locks the bootloader.** Check `fastboot getvar unlocked`
+  afterwards, and don't relock while modified images are installed.
+- **Rabbit's setup flow can force the OTA.** We disabled the updater package instead.
+- **Back up first.** Read-only copies of `seccfg`, boot, vbmeta and the logical partitions,
+  plus your own way back to bootloader fastboot. Record your OS build number from
+  Settings > Device info before you change anything.
 - **Don't run `adb root`.** It dropped USB access until reboot.
-
-## Before touching anything
-
-- Write down the OS version, active slot and `fastboot getvar` output, with
-  identifiers removed.
-- Take a full read-only backup of `seccfg`, boot, vbmeta and the logical
-  partitions, and keep your own way back to bootloader fastboot.
-- Treat missing backups or a firmware mismatch as a stop condition.
-- A corrected `seccfg` from another unit is not a substitute for generating one
-  from your own ([recovery.md](recovery.md)).
-
-## Not written down yet
-
-The early recovery work was done with another AI tool, so these were never
-recorded in this repository. They are open, not forgotten:
-
-- the exact OS3 build number and the date of the OTA (believed to be rabbitOS 3);
-- what exactly worked on it (unlock only, or ADB too);
-- which tool and images were used to return to v0.8.293, and how the device was
-  put into fastboot.
-
-If you took the same OTA, record your own build number from Settings > Device info
-before you change anything, and say so in any report.
